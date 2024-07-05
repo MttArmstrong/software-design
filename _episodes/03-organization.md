@@ -4,10 +4,13 @@ teaching: 10
 exercises: 0
 questions:
 - "What does it mean to organize code?"
+- "What is a function?"
 objectives:
 - "At the end of this module you should have a better understanding of what spaghetti code is and how to organize it better."
 keypoints:
-- ""
+- "Functions can be used to structure code."
+- "Code that is better organized is easier to understand and maintain."
+- "Duplicate code should be avoided."
 ---
 # From Instructions to Structure: Organizing Code
 
@@ -43,3 +46,23 @@ When writing functions, however, keep the following guidelines in mind:
 ## Keep it DRY
 
 The DRY principle stands for "Don't Repeat Yourself." It means that if you have multiple lines of code that are duplicates of each other then they should be replaced by, for instance, functions. A good indicator that your code could be "DRYier" is if you copy-paste code from one place to another. Using the same code in multiple places by duplicated it means that if you find a bug you have to hunt down all the duplicates and fix it there as well. If you use a function instead, you only have to fix the function (in one place).
+
+## Spaghetti Code
+
+Spaghetti code is code without any structure or modularization. Often that means there are no or few functions or classes to structure your code, but more importantly your code has no discernible structure. Spaghetti code is almost impossible to maintain once it reaches a certain length. 
+
+## Configurations
+
+Configurations should be all kept in one place. For instance if a program needs a few paths to file directories and some numbers (e.g. model parameterizations), then those should be ideally kept in one file named in a way that it is obvious what it contains (e.g. "config" or "configuration"). This way a programmer only needs to find one file to set up a program rather than hunting through the code to find all hard-coded paths and other configurations.
+
+## Keep It Together
+
+Keep the parts of your code that belong together in the same place. Depending on your programming language that can be the same file, or the same class, the same module, or the same directory. You should use whatever means the programming language of your choosing provides to keep code that logically belongs together together. This makes it easier to make changes later on, as you don’t have to look through all the code to find the relevant pieces that need to be changed.
+
+## Whitespace
+
+Whitespace is an often underestimated tool to create structure in code. Lines of code that belong together should be visually together. Similarly blocks of code that address different issues should be set apart. However, one empty line is usually enough to achieve a visual indicator for different blocks of code. More than one empty line typically makes it more difficult to read.
+
+## Know What’s Being Offered
+
+Most programming languages offer a lot of utility functions and solutions for commonly encountered problems. While it takes a lot of time to learn every feature of a programming language, you should first check what solutions are part of the basic functionality of the programming language you are using before implementing your own solution. For instance, if you need to solve a common math problem, first check if your programming language has a math package and if it includes a function that does what you need before implementing your own.
