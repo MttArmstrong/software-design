@@ -6,8 +6,11 @@ questions:
 - "How can code be best organized to make it easier to understand and maintain it?"
 objectives:
 - "At the end of this module you should have a better understanding of how the different parts of code can be connected in a way so your code is better maintainable."
+- "You will understand what coupling means in software development and how it relates to maintainable code."
 keypoints:
-- ""
+- "Dependencies need to be managed as well as the code itself."
+- "*Coupling* refers to what extend the components of a piece of software are connected. Ideally, the components are loosely coupled so that if one component is changed, the others do not have to be changed as well."
+- "There are many techniques and best practices to achieve loose coupling, information hiding, abstraction, and the Single Responsibility Principle are some of them."
 ---
 # Layer 2: Structure and Organization
 
@@ -278,4 +281,27 @@ class Student:
 ~~~
 {: .language-python }
 
-In the above example, the `Student` class has three different responsibilities: registering students, calculating the results for a student, and sending an email to the student. This means that it also has at least three reasons to change: if students need to be registered differently, if the results of a student need to be calculating differently, or if emails need to be send out differently.
+In the above example, the `Student` class has three different responsibilities: registering students, calculating the results for a student, and sending an email to the student. This means that it also has at least three reasons to change: if students need to be registered differently, if the results of a student need to be calculated differently, or if emails need to be sent out differently.
+
+The following code separates out those responsibilities into different classes.
+
+~~~
+class Student:
+    def set_address(self, address):
+        # do logic
+
+    def set_email_address(self, email):
+        # do logic
+
+class Registrar:
+    def register_student(self, student):
+        # do logic
+
+class EmailService:
+    def send_email(self, student):
+        # do logic
+~~~
+{: .language-python } 
+
+Now, each class has only one responsibility. The `Student` class is used to manage student data. The `Registrar` class’ responsibility is to register students (and potentially unregister them). The `EmailService` sends emails. A side effect of applying the SRP is that each class can now potentially be used in a different context (e.g. the `EmailService` could be extended to send emails to faculty).
+
