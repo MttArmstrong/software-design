@@ -1,6 +1,6 @@
 ---
 title: "Structure and Organization"
-teaching: 15
+teaching: 30
 exercises: 0
 questions:
 - "How can code be best organized to make it easier to understand and maintain it?"
@@ -159,3 +159,123 @@ import sound
 sound.say_something("bark", animal_type="dog")
 ~~~
 {: .language-python }
+
+### Object-oriented Information Hiding
+
+More often information hiding is talked about in the context of object-oriented programming. In the following example, knowledge about the internal workings of the class are required to use the class:
+
+~~~
+class Animal:
+
+    animal_type = "cat"
+    sound = "meow"
+
+    def make_sound(self):
+        print("The {} says {}.".format(self.animal_type, self.sound))
+
+
+a = Animal()
+a.sound = "hiss"
+a.make_sound()
+~~~
+{: .language-python }
+
+As a result, we would be able to rename the variable sound without having to change the code that uses the Animal class. Instead, we can add a constructor parameter, which would allow us to rename the variable as much as we like.
+
+~~~
+class Animal:
+
+    def __init__(self, animal_type="cat", sound="meow"):
+        self._animal_type = animal_type
+        self._sound = sound
+
+    def make_sound(self):
+        print("The {} says {}.".format(self._animal_type, self._sound))
+
+
+
+a = Animal(sound="hiss")
+a.make_sound()
+~~~
+{: .language-python }
+
+
+## Abstraction
+
+*Abstraction* is an omnipresent topic in software development. Very broadly speaking, *abstraction* refers to the result (or sometimes the action itself) of making something less detailed. In programming specifically it refers to removing implementation specific details. For instance, take a math package that offers a function or method to calculate the average of a list of numbers. First it needs to sum up all the numbers, then count how many numbers there are, before dividing the sum by the count. When you use the `average` function, you are using an abstraction, because all you do is call `average()`. Well, in theory at least, but we’ll get to that in a minute.
+
+First, let’s talk about why it is important to talk about abstraction. There are really two reasons. First, every time you program, you create abstractions. The better defined these abstractions are, the easier it will be to maintain the code. You should have a plan for what functions or methods your code will provide. Ideally, the abstractions you create will be consistent and make logical sense (principle of least astonishment!). For instance, if you develop a package to provide domain-specific math functions, then that package should not contain functionality to do string manipulations. 
+
+Second, you are using abstractions every time you program. When you use a module provided by your language of choice or developed by someone else, you are using their abstractions. This means that there is a lot that’s going on under the hood. When using an abstraction, you are trusting that the abstraction is doing what it should be doing and what you think it should be doing. And here is the thing, when earlier it said you don’t need to know the implementation details and that it does not matter to you, that’s not the complete truth. In fact, it does matter because a) you depend on it doing what you expect it to be doing and b) abstractions can *leak*.
+
+### Leaky Abstractions
+
+The "Law of Leaky Abstractions" was coined by Joel Spolsky and states that:
+
+> All non-trivial abstractions, to some degree, are leaky.
+
+Spolsky was a program manager for Microsoft Excel in the 90s, he co-created StackOverflow and Trello, and had a blog [Joel on Software](https://www.joelonsoftware.com/) where he wrote about programming. Some of his blog posts were also published as a book and are still worth reading. 
+
+But what does it mean that all abstractions are leaky? What Spolsky is describing with this law is the fact that as soon as an abstraction is complex enough, the complexity of certain implementation details that abstractions hide bubble up to the higher layers. To use a very simple example, consider the following function that divides two number and subtracts one from it:
+
+~~~
+def divide_minus_one(num_1, num_2):
+	return num_1/num_2 - 1
+~~~
+{: .language-python }
+
+If you use this function and pass in 0 as the second argument you will get a ZeroDivisionError. This means that the implementation specific details (that num_1 is divided by num_2) cause an error that is passed on to the next layer (your code). The abstraction is leaky. To be able to avoid this error, you need to know the implementation details of the function to then handle the division by 0 case in your code.
+
+### Examples of Leaky Abstractions
+
+
+> Scientists in Hawaiʻi have uncovered a glitch in a piece of code that could have yielded incorrect results in over 100 published studies that cited the original paper.
+>
+> Source: [Vice.com](https://www.vice.com/en/article/zmjwda/a-code-glitch-may-have-caused-errors-in-more-than-100-published-studies)
+
+In this case, a Python script used for chemistry calculations yielded different results depending on the operating system. Operating systems sort files differently by default (some use alphabetic order, some use the creation date, etc.). The Python script did not take this into account and just used the list of files returned by Python’s functions to get a list of all files in a directory without any further sorting. Since the algorithm relied on a particular order of the files, it returned different results when run on an operating system that sorted files differently. The specifics of the operating system leaked through the Python abstraction and into the script.
+
+Another example is floating point arithmetic. When we are using Python, we typically use the decimal system for calculations. However, numbers are internally stored in a binary system (consisting of 1s and 0s). Not all decimal numbers can be represented as binary numbers. This is similar to not being able to represent certain fractions like ⅓ as a decimal number. 0.1 is a decimal number that can’t be represented as a binary number (it would be a never ending number). This leads on the one hand to rounding errors when your number get too small, on the other hand you might encounter some special cases like the following:
+
+~~~
+>>> 0.1+0.1+0.1 == 0.3
+False
+~~~
+{: .language-python }
+
+In this leaky abstraction, how floating point numbers are represented in the system leaks through to your Python code.
+
+### The Issue with Leaky Abstractions
+
+Leaky Abstractions are really tricky. First of all, you need to know how an abstraction works to be able to handle a leaky abstraction. Often leaky abstractions lead you down the rabbit hole of implementation details in the search for the root cause of an issue. More importantly though, it can be near impossible to know when an abstraction might leak unless you know the implementation specifics of the abstraction. In the case of the chemistry script, unless you have run into the issue of file sorting before or are a very careful reader of documentation (and even that won’t always save you), there is no way of predicting that there might be an issue. This problem is compounded by the fact that the number of existing abstractions increases constantly. The more packages and frameworks there are to make the life of a developer easier, the more abstractions there are, which means the greater the potential for a leaky abstraction. 
+
+## Single Responsibility Principle (SRP)
+
+> “A class should have only one reason to change.”
+>
+> Robert C. Martin (2003), Agile Software Development: Principles, Patterns, and Practices
+
+
+Where you could replace “class” with “module” or “function.” This principle is also expressed at: “Gather together the things that change for the same reasons. Separate those things that change for different reasons.” Basically what this means is that the things that belong together should be together. For example, if your module is reading and writing CSV files, then it should not also do math calculations. The only reason for your module to change is if the format of the CSV files changes, for instance. 
+
+While this in theory might seem straightforward, it can get pretty tricky when you have functionality that depends on many different interconnected factors. Sometimes, the question of what qualifies as a “reason to change” needs to be reframed to not introduce too many new complexities in an effort to reduce the “responsibility” of a component.
+
+### Example of Applying the SRP
+
+Look at the following example and think about what the different responsibilities of the class are.
+
+~~~
+class Student:
+
+    def register_student(self):
+        # some logic
+
+    def calculate_student_results(self):
+        # some logic
+
+    def send_email(self):
+        # some logic
+~~~
+{: .language-python }
+
+In the above example, the `Student` class has three different responsibilities: registering students, calculating the results for a student, and sending an email to the student. This means that it also has at least three reasons to change: if students need to be registered differently, if the results of a student need to be calculating differently, or if emails need to be send out differently.
