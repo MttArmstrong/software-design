@@ -52,7 +52,7 @@ console.log("Goodbye")}
 }
 ```
 
-is much less readable then:
+is much less readable than:
 ```
 function hello() {
     console.log("Hello World!");
