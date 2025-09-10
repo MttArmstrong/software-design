@@ -18,17 +18,17 @@ carpentry: 'intersect'
 carpentry_description: 'Software Design'
 
 # Overall title for pages.
-title: 'Software Design' # FIXME
+title: 'Software Design' 
 
 # Date the lesson was created (YYYY-MM-DD, this is empty by default)
-created: ~ # FIXME
+created: ~ 
 
 # Comma-separated list of keywords for the lesson
-keywords: 'software, data, lesson, The Carpentries' # FIXME
+keywords: 'INTERSECT, software, design' 
 
 # Life cycle stage of the lesson
 # possible values: pre-alpha, alpha, beta, stable
-life_cycle: 'alpha' # FIXME
+life_cycle: 'beta' 
 
 # License of the lesson
 license: 'CC-BY 4.0'
@@ -40,7 +40,7 @@ source: 'https://github.com/INTERSECT-training/software-design' # FIXME
 branch: 'main'
 
 # Who to contact if there are any issues
-contact: 'icosden@princeton.edu' # FIXME
+contact: 'icosden@princeton.edu' 
 
 # Navigation ------------------------------------------------
 #
@@ -88,4 +88,16 @@ profiles:
 # sandpaper and varnish versions) should live
 
 varnish: intersect-training/varnish
+
+
+analytics: |
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src='https://www.googletagmanager.com/gtag/js?id={G-K0V0NC6MEJ}#' ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', '{G-K0V0NC6MEJ}');
+  </script>
 
